@@ -1576,6 +1576,14 @@ Status BlockBasedTable::MaybeReadBlockAndLoadToCache(
             GetMemoryAllocator(rep_->table_options), block_type, get_context);
       }
     }
+    if (true && gettid()%8 == 0){
+      if (block_type == BlockType::kIndex)
+        printf("I%d",is_cache_hit);
+      else if (block_type == BlockType::kFilter)
+        printf("F%d",is_cache_hit);
+      else if (block_type == BlockType::kData)
+        printf("D%d",is_cache_hit);
+    }
   }
 
   // Fill lookup_context.
