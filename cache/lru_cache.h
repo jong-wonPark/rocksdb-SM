@@ -88,6 +88,8 @@ struct LRUHandle {
     IS_PENDING = (1 << 5),
     // Whether this handle is still in a lower tier
     IS_IN_SECONDARY_CACHE = (1 << 6),
+    // Whether this entry is mid priority entry.
+    IS_MID_PRI = (1 << 7),
   };
 
   uint8_t flags;
@@ -144,6 +146,11 @@ struct LRUHandle {
     if (priority == Cache::Priority::HIGH) {
       flags |= IS_HIGH_PRI;
     } else {
+      if (priority == Cache::Priority::MID) {
+        flags |= IS_MID_PRI;
+      } else {
+        flags &= ~IS_MID_PRI;
+      }
       flags &= ~IS_HIGH_PRI;
     }
   }

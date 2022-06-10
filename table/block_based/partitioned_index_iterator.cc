@@ -93,6 +93,7 @@ void PartitionedIndexIterator::InitPartitionedIndexBlock() {
         rep, partitioned_index_handle, read_options_.readahead_size,
         is_for_compaction, read_options_.async_io);
     Status s;
+    //table_->NewDataBlockIteratorNoCache<IndexBlockIter>(
     table_->NewDataBlockIterator<IndexBlockIter>(
         read_options_, partitioned_index_handle, &block_iter_,
         BlockType::kIndex,

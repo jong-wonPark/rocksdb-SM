@@ -477,7 +477,6 @@ Status TableCache::Get(
         .PermitUncheckedError();
   }
 #endif  // ROCKSDB_LITE
-
   if (handle != nullptr) {
     ReleaseHandle(handle);
   }

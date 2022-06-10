@@ -279,6 +279,13 @@ class BlockBasedTable : public TableReader {
       BlockCacheLookupContext* lookup_context, Status s,
       FilePrefetchBuffer* prefetch_buffer, bool for_compaction = false) const;
 
+  template <typename TBlockIter>
+  TBlockIter* NewDataBlockIteratorNoCache(
+      const ReadOptions& ro, const BlockHandle& block_handle,
+      TBlockIter* input_iter, BlockType block_type, GetContext* get_context,
+      BlockCacheLookupContext* lookup_context, Status s,
+      FilePrefetchBuffer* prefetch_buffer, bool for_compaction = false) const;
+
   // input_iter: if it is not null, update this one and return it as Iterator
   template <typename TBlockIter>
   TBlockIter* NewDataBlockIterator(const ReadOptions& ro,

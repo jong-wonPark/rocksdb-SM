@@ -8,10 +8,12 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "cache/sharded_cache.h"
+#include "cache/lru_cache.h"
 
 #include <algorithm>
 #include <cstdint>
 #include <memory>
+#include <unistd.h>
 
 #include "util/hash.h"
 #include "util/math.h"
@@ -106,6 +108,11 @@ bool ShardedCache::Ref(Handle* handle) {
 
 bool ShardedCache::Release(Handle* handle, bool erase_if_last_ref) {
   uint32_t hash = GetHash(handle);
+  /*if(gettid()%8==0){
+    lru_cache::LRUHandle* e = reinterpret_cast<lru_cache::LRUHandle*>(handle);
+    if(e->IsHighPri()){printf("high\n");}
+    else{printf("low\n");}
+  }*/
   return GetShard(Shard(hash))->Release(handle, erase_if_last_ref);
 }
 

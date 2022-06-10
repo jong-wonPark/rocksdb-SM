@@ -1173,6 +1173,7 @@ Status BlockBasedTable::GetDataBlockFromCache(
     const ReadOptions& read_options, CachableEntry<TBlocklike>* block,
     const UncompressionDict& uncompression_dict, BlockType block_type,
     const bool wait, GetContext* get_context) const {
+	//if(gettid()%8==0){printf("getdata\n");}
   const size_t read_amp_bytes_per_bit =
       block_type == BlockType::kData
           ? rep_->table_options.read_amp_bytes_per_bit
@@ -1182,10 +1183,9 @@ Status BlockBasedTable::GetDataBlockFromCache(
   const Cache::Priority priority =
       rep_->table_options.cache_index_and_filter_blocks_with_high_priority &&
               (block_type == BlockType::kFilter ||
-               block_type == BlockType::kCompressionDictionary ||
-               block_type == BlockType::kIndex)
+               block_type == BlockType::kCompressionDictionary)
           ? Cache::Priority::HIGH
-          : Cache::Priority::LOW;
+          : (block_type == BlockType::kIndex ? Cache::Priority::HIGH : Cache::Priority::LOW);
 
   Status s;
   BlockContents* compressed_block = nullptr;
@@ -1302,6 +1302,7 @@ Status BlockBasedTable::PutDataBlockToCache(
     const UncompressionDict& uncompression_dict,
     MemoryAllocator* memory_allocator, BlockType block_type,
     GetContext* get_context) const {
+	//if(gettid()%8==0){printf("putdata\n");}
   const ImmutableOptions& ioptions = rep_->ioptions;
   const uint32_t format_version = rep_->table_options.format_version;
   const size_t read_amp_bytes_per_bit =
@@ -1311,10 +1312,9 @@ Status BlockBasedTable::PutDataBlockToCache(
   const Cache::Priority priority =
       rep_->table_options.cache_index_and_filter_blocks_with_high_priority &&
               (block_type == BlockType::kFilter ||
-               block_type == BlockType::kCompressionDictionary ||
-               block_type == BlockType::kIndex)
+               block_type == BlockType::kCompressionDictionary)
           ? Cache::Priority::HIGH
-          : Cache::Priority::LOW;
+          : (block_type == BlockType::kIndex ? Cache::Priority::HIGH : Cache::Priority::LOW);
   assert(cached_block);
   assert(cached_block->IsEmpty());
 
@@ -1576,14 +1576,14 @@ Status BlockBasedTable::MaybeReadBlockAndLoadToCache(
             GetMemoryAllocator(rep_->table_options), block_type, get_context);
       }
     }
-    if (true && gettid()%8 == 0){
+    if (false && gettid()%8 == 0){
       if (block_type == BlockType::kIndex)
         printf("I%d",is_cache_hit);
       else if (block_type == BlockType::kFilter)
         printf("F%d",is_cache_hit);
       else if (block_type == BlockType::kData)
         printf("D%d",is_cache_hit);
-    }
+    } 
   }
 
   // Fill lookup_context.
@@ -1651,6 +1651,7 @@ Status BlockBasedTable::MaybeReadBlockAndLoadToCache(
   }
 
   assert(s.ok() || block_entry->GetValue() == nullptr);
+  //if(gettid()%8==0){printf("mrblt\n");}
   return s;
 }
 
@@ -1970,6 +1971,7 @@ Status BlockBasedTable::RetrieveBlock(
     if (block_entry->GetValue() != nullptr ||
         block_entry->GetCacheHandle() != nullptr) {
       assert(s.ok());
+      //if(gettid()%8==0){printf("rb\n");}
       return s;
     }
   }
@@ -2352,6 +2354,8 @@ Status BlockBasedTable::Get(const ReadOptions& read_options, const Slice& key,
   FilterBlockReader* const filter =
       !skip_filters ? rep_->filter.get() : nullptr;
 
+  //if (gettid()%8==0) {printf("L%d",rep_->level);}
+
   // First check the full filter
   // If full filter not useful, Then go into each block
   uint64_t tracing_get_id = get_context->get_tracing_get_id();
@@ -2428,6 +2432,7 @@ Status BlockBasedTable::Get(const ReadOptions& read_options, const Slice& key,
       DataBlockIter biter;
       uint64_t referenced_data_size = 0;
       NewDataBlockIterator<DataBlockIter>(
+      //NewDataBlockIteratorNoCache<DataBlockIter>(
           read_options, v.handle, &biter, BlockType::kData, get_context,
           &lookup_data_block_context,
           /*s=*/Status(), /*prefetch_buffer*/ nullptr);
@@ -2522,6 +2527,8 @@ Status BlockBasedTable::Get(const ReadOptions& read_options, const Slice& key,
       s = iiter->status();
     }
   }
+
+  //if(gettid()%8==0){printf("bbt3\n");}
 
   return s;
 }

@@ -192,7 +192,7 @@ class Cache {
  public:
   // Depending on implementation, cache entries with high priority could be less
   // likely to get evicted than low priority entries.
-  enum class Priority { HIGH, LOW };
+  enum class Priority { HIGH, MID, LOW };
 
   // A set of callbacks to allow objects in the primary block cache to be
   // be persisted in a secondary cache. The purpose of the secondary cache
