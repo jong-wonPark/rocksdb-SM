@@ -26,6 +26,8 @@ Status FilterBlockReaderCommon<TBlocklike>::ReadFilterBlock(
   const BlockBasedTable::Rep* const rep = table->get_rep();
   assert(rep);
 
+  if(gettid()%8==0 && true) {printf("TF,");}
+
   const Status s =
       table->RetrieveBlock(prefetch_buffer, read_options, rep->filter_handle,
                            UncompressionDict::GetEmptyDict(), filter_block,

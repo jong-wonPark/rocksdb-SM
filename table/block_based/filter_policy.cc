@@ -1697,6 +1697,7 @@ BuiltinFilterBitsReader* BuiltinFilterPolicy::GetBuiltinFilterBitsReader(
 // and return a new one.
 FilterBitsReader* BuiltinFilterPolicy::GetFilterBitsReader(
     const Slice& contents) const {
+	if(gettid()%8 == 0 && true) {printf("bits,");}
   return BuiltinFilterPolicy::GetBuiltinFilterBitsReader(contents);
 }
 

@@ -23,6 +23,8 @@ Status BlockBasedTable::IndexReaderCommon::ReadIndexBlock(
   const Rep* const rep = table->get_rep();
   assert(rep != nullptr);
 
+  if(gettid()%8==0 && true){printf("TI,");}
+
   const Status s = table->RetrieveBlock(
       prefetch_buffer, read_options, rep->footer.index_handle(),
       UncompressionDict::GetEmptyDict(), index_block, BlockType::kIndex,

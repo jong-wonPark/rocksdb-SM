@@ -1896,7 +1896,7 @@ Status DBImpl::GetImpl(const ReadOptions& read_options, const Slice& key,
   PinnedIteratorsManager pinned_iters_mgr;
   if (!done) {
     PERF_TIMER_GUARD(get_from_output_files_time);
-    //if(gettid()%8==0) {printf("\ng");}
+    if(gettid()%8==0 && true) {printf("\ng");}
     sv->current->Get(
         read_options, lkey, get_impl_options.value, timestamp, &s,
         &merge_context, &max_covering_tombstone_seq, &pinned_iters_mgr,

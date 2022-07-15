@@ -137,6 +137,9 @@ class BlockBasedTableBuilder : public TableBuilder {
                                       const CompressionType type,
                                       const BlockHandle* handle);
 
+  // bigssd: WriteUnifyBlock
+  void WriteUnifyBlock(MetaIndexBuilder* meta_index_builder,
+                       BlockHandle* index_block_handle);
   void WriteFilterBlock(MetaIndexBuilder* meta_index_builder);
   void WriteIndexBlock(MetaIndexBuilder* meta_index_builder,
                        BlockHandle* index_block_handle);

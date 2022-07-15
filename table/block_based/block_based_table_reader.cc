@@ -1180,6 +1180,7 @@ Status BlockBasedTable::GetDataBlockFromCache(
           : 0;
   assert(block);
   assert(block->IsEmpty());
+  // bigssd: priority setup
   const Cache::Priority priority =
       rep_->table_options.cache_index_and_filter_blocks_with_high_priority &&
               (block_type == BlockType::kFilter ||
@@ -1309,6 +1310,7 @@ Status BlockBasedTable::PutDataBlockToCache(
       block_type == BlockType::kData
           ? rep_->table_options.read_amp_bytes_per_bit
           : 0;
+  // bigssd: priority setup
   const Cache::Priority priority =
       rep_->table_options.cache_index_and_filter_blocks_with_high_priority &&
               (block_type == BlockType::kFilter ||
@@ -1576,7 +1578,7 @@ Status BlockBasedTable::MaybeReadBlockAndLoadToCache(
             GetMemoryAllocator(rep_->table_options), block_type, get_context);
       }
     }
-    if (false && gettid()%8 == 0){
+    if (true && gettid()%8 == 0){
       if (block_type == BlockType::kIndex)
         printf("I%d",is_cache_hit);
       else if (block_type == BlockType::kFilter)

@@ -2017,7 +2017,9 @@ Status BlockBasedTableBuilder::Finish() {
   //    7. Footer
   BlockHandle metaindex_block_handle, index_block_handle;
   MetaIndexBuilder meta_index_builder;
-  WriteFilterBlock(&meta_index_builder);
+  // bigssd: WriteUnifyBlock
+  WriteUnifyBlock(&meta_index_builder, &index_block_handle);
+  //WriteFilterBlock(&meta_index_builder);
   WriteIndexBlock(&meta_index_builder, &index_block_handle);
   WriteCompressionDictBlock(&meta_index_builder);
   WriteRangeDelBlock(&meta_index_builder);
